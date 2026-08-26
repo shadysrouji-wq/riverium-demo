@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Riverium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap">
+
+<style>
+:root{
+  --sky:#4BAEDC; --sky-l:#7FCBE8; --sky-d:#2B8CBE; --navy:#1B3A8C; --mid:#2B7CC9; --cyan:#5BC5E8;
+  --leaf:#4CA23F; --lime:#8CC63F; --coral:#E8302A; --gold:#D4A017;
+  --bg:#F4FAFD; --surf:#FFFFFF; --surf2:#EAF4FA;
+  --ink:#12294D; --ink2:#5A7793; --ink3:#93AABF;
+  --line:rgba(27,58,140,.13); --line2:rgba(27,58,140,.07);
+  --ok:#3E9C4E; --ok-f:rgba(62,156,78,.12);
+  --warn:#E0930F; --warn-f:rgba(224,147,15,.14);
+  --crit:#D62B22; --crit-f:rgba(214,43,34,.11);
+  --sky-f:rgba(75,174,220,.13);
+  --sh-s:0 2px 8px -4px rgba(18,41,77,.28); --sh:0 18px 44px -28px rgba(18,41,77,.55);
+}
+:root[data-theme="dark"]{
+  --bg:#081524; --surf:#0E2135; --surf2:#132B42;
+  --ink:#E8F3FA; --ink2:#9CB6CC; --ink3:#6B8AA5;
+  --line:rgba(232,243,250,.13); --line2:rgba(232,243,250,.07);
+  --sky:#5FBCE6; --sky-d:#3E9DCE; --navy:#8FB4F0;
+  --ok:#5CC46E; --ok-f:rgba(92,196,110,.16);
+  --warn:#F0AB33; --warn-f:rgba(240,171,51,.16);
+  --crit:#F0544A; --crit-f:rgba(240,84,74,.15);
+  --sky-f:rgba(95,188,230,.16);
+  --sh-s:0 2px 8px -4px rgba(0,0,0,.7); --sh:0 18px 44px -28px rgba(0,0,0,.9);
+}
+*{box-sizing:border-box}
+body{margin:0;direction:rtl;background:var(--bg);color:var(--ink);
+  font-family:"Rubik",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;align-items:center;padding:18px 16px 40px}
+@media(max-width:520px){body{padding:0}}
+.demo-banner{width:392px;max-width:100%;margin-bottom:12px;padding:11px 15px;border-radius:14px;
+  background:var(--warn-f);border:1px solid rgba(224,147,15,.4);font-size:.8rem;line-height:1.55;color:var(--ink)}
+.demo-banner b{color:var(--warn);font-weight:500}
+@media(max-width:520px){.demo-banner{margin:10px 12px 2px;width:auto}}
+.demo-chip{font-size:.62rem;font-weight:500;color:var(--warn);background:var(--warn-f);
+  border:1px solid rgba(224,147,15,.35);border-radius:7px;padding:3px 8px;margin-right:7px}
+.dev{width:392px;max-width:100%;border-radius:42px;padding:9px;background:var(--surf);
+  border:1px solid var(--line);box-shadow:var(--sh)}
+@media(max-width:520px){.dev{border:none;border-radius:0;padding:0;box-shadow:none;width:100%}}
+.scr{border-radius:34px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column;height:812px;position:relative}
+@media(max-width:520px){.scr{border-radius:0;height:100vh}}
+
+.sb{display:flex;justify-content:space-between;align-items:center;padding:13px 22px 4px;font-size:.72rem;font-weight:500;color:var(--ink2);flex:none}
+.sb .r{display:flex;gap:5px;align-items:center}
+.sb svg{width:15px;height:11px;fill:var(--ink2)}
+.ab{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 18px 10px;flex:none}
+.brand{display:flex;align-items:center;gap:9px}
+.brand svg.mk{width:34px;height:27px;flex:none}
+.brand .wm{font-size:1.18rem;font-weight:400;color:var(--sky);line-height:1}
+.iconbtn{width:34px;height:34px;border-radius:11px;border:1px solid var(--line);background:var(--surf);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--sh-s)}
+.iconbtn svg{width:16px;height:16px;stroke:var(--ink2);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.iconbtn:hover svg{stroke:var(--sky)}
+
+.body{flex:1;overflow-y:auto;padding:0 16px 18px}
+.body::-webkit-scrollbar{width:0}
+.mode{display:flex;align-items:center;gap:4px;padding:3px;border-radius:11px;background:var(--surf2);
+  margin:26px auto 4px;width:max-content;opacity:.88}
+.mode .mlab{font-size:.68rem;color:var(--ink3);padding:0 7px 0 3px}
+.mode button{font-family:inherit;font-size:.72rem;font-weight:500;cursor:pointer;border:none;
+  padding:6px 12px;border-radius:8px;background:transparent;color:var(--ink2);transition:all .26s cubic-bezier(.2,.9,.25,1)}
+.mode button[aria-pressed="true"]{color:#fff;background:linear-gradient(150deg,var(--sky),var(--sky-d))}
+.mode button:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+
+.next{border:1.4px solid rgba(75,174,220,.4);background:linear-gradient(170deg,var(--sky-f),var(--surf) 60%)}
+.next .n,.more .n{background:var(--surf2);font-size:1rem}
+.more{margin-top:12px}
+.more summary{cursor:pointer;list-style:none;font-size:.83rem;font-weight:500;color:var(--sky-d);
+  padding:11px 14px;border-radius:14px;background:var(--surf);border:1px solid var(--line)}
+.more summary::-webkit-details-marker{display:none}
+.more summary::before{content:"▾ ";font-size:.7rem}
+.more[open] summary::before{content:"▴ "}
+.more .task{padding:11px 6px}
+
+.hd{font-size:.92rem;font-weight:500;margin:18px 0 8px;display:flex;align-items:center;justify-content:space-between}
+.hd small{font-size:.72rem;font-weight:400;color:var(--ink3)}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:17px;padding:14px 15px;box-shadow:var(--sh-s)}
+.hide{display:none}
+
+/* photo */
+.photo{position:relative;height:172px;border-radius:19px;overflow:hidden;box-shadow:var(--sh-s)}
+#shot{position:absolute;inset:0;width:100%;height:100%;display:block}
+.pv{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,20,40,.3),rgba(4,20,40,0) 38%,rgba(4,20,40,.68))}
+.pt{position:absolute;top:12px;right:14px;left:14px;display:flex;justify-content:space-between;align-items:flex-start}
+.pt b{font-size:1rem;font-weight:500;color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.6)}
+.pt span{font-size:.67rem;color:rgba(255,255,255,.88);text-shadow:0 1px 8px rgba(0,0,0,.7)}
+.pb{position:absolute;bottom:11px;right:14px;left:14px;display:flex;justify-content:space-between;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px 6px 9px;border-radius:9px;background:rgba(255,255,255,.96);color:#12294D;font-size:.77rem;font-weight:500}
+.chip s{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.pb em{font-style:normal;font-size:.64rem;color:rgba(255,255,255,.75);text-shadow:0 1px 8px rgba(0,0,0,.8)}
+
+.state{display:flex;gap:12px;align-items:center}
+.state .ic{width:44px;height:44px;border-radius:14px;flex:none;display:flex;align-items:center;justify-content:center;background:var(--ok-f)}
+.state .ic svg{width:22px;height:22px;stroke:var(--ok);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.state h3{margin:0;font-size:1.04rem;font-weight:500}
+.state p{margin:3px 0 0;font-size:.82rem;color:var(--ink2);line-height:1.55}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:11px}
+.mn{border-radius:13px;padding:10px;background:var(--surf2);text-align:center}
+.mn .k{font-size:.65rem;color:var(--ink3)}
+.mn .v{font-size:.92rem;font-weight:500;margin-top:3px}
+.mn.g .v{color:var(--ok)} .mn.w .v{color:var(--warn)}
+
+.task{display:flex;gap:11px;align-items:flex-start;padding:11px 0}
+.task+.task{border-top:1px solid var(--line2)}
+.task .n{width:25px;height:25px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center;
+  font-size:.76rem;font-weight:500;color:#fff;background:linear-gradient(150deg,var(--sky),var(--sky-d))}
+.task .t{font-size:.88rem;font-weight:500;line-height:1.4}
+.task .s{font-size:.77rem;color:var(--ink2);margin-top:2px;line-height:1.55}
+.tip{border-radius:14px;padding:13px 14px;background:var(--sky-f);border:1px solid rgba(75,174,220,.26);margin-top:10px}
+.tip b{font-size:.85rem;font-weight:500;color:var(--sky-d);display:block}
+.tip p{margin:6px 0 0;font-size:.81rem;line-height:1.62;color:var(--ink2)}
+
+.cta{position:relative;isolation:isolate;overflow:hidden;display:block;width:100%;margin-top:13px;border:none;cursor:pointer;
+  font-family:inherit;font-size:.92rem;font-weight:500;color:#fff;padding:14px 18px;border-radius:15px;
+  background:radial-gradient(120% 150% at 24% 12%,rgba(255,255,255,.3),transparent 56%),linear-gradient(150deg,var(--sky),var(--sky-d) 55%,var(--navy) 130%);
+  box-shadow:0 12px 28px -14px var(--sky-d);transition:transform .28s cubic-bezier(.2,.9,.25,1)}
+.cta::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.2;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");background-size:120px}
+.cta span{position:relative;z-index:3}
+.cta:hover{transform:translateY(-2px)}
+.quiet{display:block;width:100%;text-align:center;margin-top:9px;background:none;border:none;font-family:inherit;
+  font-size:.82rem;font-weight:500;color:var(--sky-d);cursor:pointer;padding:8px}
+
+.rows{border:1px solid var(--line);border-radius:15px;overflow:hidden;background:var(--surf)}
+.rw{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 13px}
+.rw+.rw{border-top:1px solid var(--line2)}
+.rw .l{font-size:.82rem;font-weight:400}
+.rw .l small{display:block;font-size:.69rem;color:var(--ink3);margin-top:1px;line-height:1.4}
+.rw .v{font-size:.9rem;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rw.w .v{color:var(--warn)} .rw.c .v{color:var(--crit);font-size:.77rem} .rw.f{background:var(--ok-f)} .rw.f .v{color:var(--ok)}
+
+.pct{font-size:.78rem;font-weight:500;font-variant-numeric:tabular-nums;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.pct.h{color:var(--ok);background:var(--ok-f)}
+.pct.m{color:var(--warn);background:var(--warn-f)}
+.pct.n{color:var(--crit);background:var(--crit-f)}
+
+.flag{border-radius:14px;padding:12px 14px;margin-top:8px;background:var(--surf);border:1px solid var(--line)}
+.flag.c{border-color:rgba(214,43,34,.3);background:var(--crit-f)}
+.flag.w{border-color:rgba(224,147,15,.32);background:var(--warn-f)}
+.flag b{font-size:.85rem;font-weight:500;display:flex;align-items:center;gap:7px}
+.flag b svg{width:15px;height:15px;flex:none;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.flag.c b{color:var(--crit)} .flag.c b svg{stroke:var(--crit)}
+.flag.w b{color:var(--warn)} .flag.w b svg{stroke:var(--warn)}
+.flag p{margin:6px 0 0;font-size:.79rem;line-height:1.6;color:var(--ink2)}
+
+/* fish list */
+.fish{display:flex;gap:12px;align-items:center;padding:11px 0}
+.fish+.fish{border-top:1px solid var(--line2)}
+.fish .av{width:46px;height:46px;border-radius:14px;flex:none;position:relative;overflow:hidden}
+.fish .av canvas{width:100%;height:100%;display:block}
+.fish .nm{flex:1;min-width:0}
+.fish .nm b{display:block;font-size:.9rem;font-weight:500}
+.fish .nm small{display:block;font-size:.73rem;color:var(--ink3);margin-top:1px;line-height:1.45}
+.fish .rt{text-align:left;flex:none}
+.cnt{font-size:.86rem;font-weight:500;color:var(--ink2);font-variant-numeric:tabular-nums}
+
+/* charts */
+.plot{direction:ltr;margin-top:8px}
+.plot svg{display:block;width:100%;height:auto;overflow:visible}
+.axl{font-size:9px;fill:var(--ink3)}
+.grid{stroke:var(--line);stroke-width:1}
+.leg{display:flex;gap:12px;flex-wrap:wrap;margin-top:9px;padding-top:9px;border-top:1px solid var(--line2)}
+.leg span{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;color:var(--ink2)}
+.leg i{width:11px;height:3px;border-radius:2px;display:block}
+.leg i.sw{width:10px;height:10px;border-radius:3px}
+.mult{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}
+.cell{border:1px solid var(--line);border-radius:13px;padding:10px 11px 7px;background:var(--surf)}
+.cell .ch{display:flex;justify-content:space-between;align-items:baseline}
+.cell .ct{font-size:.75rem;font-weight:500}
+.cell .cv{font-size:.85rem;font-weight:500;font-variant-numeric:tabular-nums}
+.cell .cs{font-size:.64rem;color:var(--ink3);margin-top:1px}
+
+/* shop */
+.prod{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surf);margin-top:10px;box-shadow:var(--sh-s)}
+.prod .im{height:104px;position:relative}
+.prod .im canvas{width:100%;height:100%;display:block}
+.prod .im .tagp{position:absolute;top:9px;right:10px;font-size:.64rem;font-weight:500;padding:4px 9px;border-radius:6px;background:rgba(255,255,255,.94);color:#12294D}
+.prod .in{padding:11px 13px 12px}
+.prod .in b{font-size:.9rem;font-weight:500;display:block}
+.prod .in small{font-size:.72rem;color:var(--ink3);display:block;margin-top:1px}
+.prod .pr{display:flex;justify-content:space-between;align-items:center;margin-top:9px}
+.prod .pr .price{font-size:1rem;font-weight:500;font-variant-numeric:tabular-nums}
+.verd{margin-top:10px;border-radius:11px;padding:9px 11px;font-size:.78rem;line-height:1.55}
+.verd b{display:flex;align-items:center;gap:6px;font-weight:500;font-size:.8rem}
+.verd b svg{width:14px;height:14px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.verd.ok{background:var(--ok-f);color:var(--ok)} .verd.ok b svg{stroke:var(--ok)}
+.verd.w{background:var(--warn-f);color:var(--warn)} .verd.w b svg{stroke:var(--warn)}
+.verd.c{background:var(--crit-f);color:var(--crit)} .verd.c b svg{stroke:var(--crit)}
+.verd p{margin:5px 0 0;color:var(--ink2)}
+.buy{width:100%;margin-top:10px;padding:10px;border-radius:11px;border:1px solid var(--line);background:var(--surf2);
+  font-family:inherit;font-size:.82rem;font-weight:500;color:var(--ink);cursor:pointer}
+.buy.p{border:none;color:#fff;background:linear-gradient(150deg,var(--sky),var(--sky-d))}
+.buy:disabled{opacity:.42;cursor:not-allowed}
+
+.note{font-size:.74rem;color:var(--ink3);line-height:1.6;margin:10px 2px 0}
+
+/* ══ flow sheet ══ */
+.sheet{position:absolute;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;
+  transform:translateY(100%);transition:transform .34s cubic-bezier(.22,1,.36,1);visibility:hidden}
+.sheet.up{transform:translateY(0);visibility:visible}
+.sh-h{display:flex;align-items:center;gap:11px;padding:16px 16px 11px;flex:none;border-bottom:1px solid var(--line2)}
+.sh-h .x{width:32px;height:32px;border-radius:10px;border:1px solid var(--line);background:var(--surf);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.sh-h .x svg{width:14px;height:14px;stroke:var(--ink2);stroke-width:2.2;fill:none;stroke-linecap:round}
+.sh-h .ti{flex:1;min-width:0}
+.sh-h .ti b{display:block;font-size:.98rem;font-weight:500}
+.sh-h .ti small{display:block;font-size:.72rem;color:var(--ink3);margin-top:1px}
+.sh-b{flex:1;overflow-y:auto;padding:14px 16px 20px}
+.sh-b::-webkit-scrollbar{width:0}
+.sh-f{flex:none;padding:11px 16px 16px;border-top:1px solid var(--line2);background:var(--surf)}
+
+.steps{display:flex;gap:5px;padding:0 16px 11px;flex:none}
+.steps i{flex:1;height:3px;border-radius:99px;background:var(--surf2)}
+.steps i.on{background:var(--sky)}
+
+.opt{display:flex;gap:12px;align-items:center;width:100%;text-align:right;font-family:inherit;cursor:pointer;
+  border:1px solid var(--line);background:var(--surf);border-radius:14px;padding:13px 14px;margin-bottom:9px;
+  box-shadow:var(--sh-s);transition:transform .22s,border-color .22s}
+.opt:hover{transform:translateY(-2px);border-color:var(--sky)}
+.opt:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.opt .oi{width:36px;height:36px;border-radius:11px;flex:none;display:flex;align-items:center;justify-content:center;background:var(--sky-f)}
+.opt .oi svg{width:18px;height:18px;stroke:var(--sky-d);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.opt .ot{flex:1;min-width:0}
+.opt .ot b{display:block;font-size:.9rem;font-weight:500;color:var(--ink)}
+.opt .ot small{display:block;font-size:.75rem;color:var(--ink3);margin-top:2px;line-height:1.45}
+.opt .oc{flex:none;width:9px;height:9px;border-radius:50%;border:2px solid var(--line)}
+.opt[aria-pressed="true"]{border-color:var(--sky);background:var(--sky-f)}
+.opt[aria-pressed="true"] .oc{border-color:var(--sky);background:var(--sky)}
+
+.verdict{border-radius:18px;padding:17px 18px;text-align:center}
+.verdict .vi{width:52px;height:52px;border-radius:16px;margin:0 auto;display:flex;align-items:center;justify-content:center}
+.verdict .vi svg{width:26px;height:26px;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.verdict h3{margin:11px 0 0;font-size:1.22rem;font-weight:500}
+.verdict p{margin:7px 0 0;font-size:.86rem;line-height:1.62}
+.verdict.ok{background:var(--ok-f)} .verdict.ok .vi{background:rgba(62,156,78,.18)} .verdict.ok .vi svg{stroke:var(--ok)} .verdict.ok h3{color:var(--ok)}
+.verdict.w{background:var(--warn-f)} .verdict.w .vi{background:rgba(224,147,15,.2)} .verdict.w .vi svg{stroke:var(--warn)} .verdict.w h3{color:var(--warn)}
+.verdict.c{background:var(--crit-f)} .verdict.c .vi{background:rgba(214,43,34,.18)} .verdict.c .vi svg{stroke:var(--crit)} .verdict.c h3{color:var(--crit)}
+.verdict.stop{background:var(--crit);border-radius:6px} .verdict.stop .vi{background:rgba(255,255,255,.22)}
+.verdict.stop .vi svg{stroke:#fff} .verdict.stop h3{color:#fff} .verdict.stop p{color:rgba(255,255,255,.92)}
+
+.exp{margin-top:12px}
+.exp .ex{border:1px solid var(--line);border-radius:13px;background:var(--surf);padding:12px 14px;margin-bottom:8px}
+.exp .ex b{font-size:.79rem;font-weight:500;color:var(--ink3);display:block}
+.exp .ex p{margin:5px 0 0;font-size:.84rem;line-height:1.6;color:var(--ink2)}
+.exp .ex p em{font-style:normal;color:var(--ink);font-weight:500}
+
+.hard{width:100%;padding:14px;border-radius:6px;border:none;background:var(--crit);color:#fff;
+  font-family:inherit;font-size:.92rem;font-weight:500;cursor:pointer}
+.ghost{width:100%;padding:13px;border-radius:13px;border:1px solid var(--line);background:var(--surf);
+  color:var(--ink);font-family:inherit;font-size:.88rem;font-weight:500;cursor:pointer;margin-top:8px}
+.ghost:disabled{opacity:.4;cursor:not-allowed}
+
+/* dial */
+.dial{text-align:center;padding:14px 0 6px}
+.dial .t{font-size:3.4rem;font-weight:300;font-variant-numeric:tabular-nums;letter-spacing:-.04em;line-height:1}
+.dial .t.u{color:var(--warn)} .dial .t.l{color:var(--crit)}
+.dial .s{font-size:.86rem;color:var(--ink2);margin-top:7px;min-height:2.4em;line-height:1.55}
+.ring{height:5px;border-radius:99px;background:var(--surf2);overflow:hidden;margin-top:11px;direction:ltr}
+.ring i{display:block;height:100%;border-radius:99px;background:var(--sky);width:0%}
+.ring i.u{background:var(--warn)} .ring i.l{background:var(--crit)}
+
+.win{display:grid;grid-template-columns:1fr auto auto;gap:9px;align-items:center;padding:10px 13px}
+.win+.win{border-top:1px solid var(--line2)}
+.win .p{font-size:.85rem;font-weight:400}
+.win .c{font-size:.73rem;color:var(--ink3);font-variant-numeric:tabular-nums}
+.win .b{font-family:inherit;font-size:.72rem;font-weight:500;padding:5px 11px;border-radius:7px;
+  border:1px solid var(--line);background:var(--surf2);color:var(--ink3);cursor:not-allowed}
+.win.op{background:var(--ok-f)} .win.op .c{color:var(--ok)}
+.win.op .b{background:var(--ok);border-color:var(--ok);color:#fff;cursor:pointer}
+.win.cl{background:var(--warn-f)} .win.cl .c{color:var(--warn)}
+.win.cl .b{background:var(--warn);border-color:var(--warn);color:#12294D;cursor:pointer}
+.win.dn .p{color:var(--ink3);text-decoration:line-through} .win.dn .c{color:var(--ok)}
+.win.ms{background:var(--crit-f)} .win.ms .c{color:var(--crit)}
+.win.ms .b{background:transparent;border-color:var(--crit);color:var(--crit);cursor:pointer}
+
+.field{margin-bottom:13px}
+.field label{display:block;font-size:.8rem;font-weight:500;color:var(--ink2);margin-bottom:5px}
+.field input{width:100%;padding:12px 13px;border-radius:12px;border:1px solid var(--line);background:var(--surf);
+  font-family:inherit;font-size:.95rem;color:var(--ink);font-variant-numeric:tabular-nums}
+.field input:focus{outline:none;border-color:var(--sky);box-shadow:0 0 0 3px var(--sky-f)}
+.field .hint{font-size:.72rem;color:var(--ink3);margin-top:4px;line-height:1.45}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+.calc{border-radius:14px;padding:13px 15px;background:var(--sky-f);border:1px solid rgba(75,174,220,.26);margin-top:4px}
+.calc .k{font-size:.74rem;color:var(--ink2)}
+.calc .v{font-size:1.5rem;font-weight:500;font-variant-numeric:tabular-nums;margin-top:2px}
+.calc .n{font-size:.73rem;color:var(--ink2);margin-top:5px;line-height:1.5}
+
+.soft{text-align:center;padding:22px 6px 8px}
+.soft .em{font-size:2.4rem;line-height:1}
+.soft h3{margin:13px 0 0;font-size:1.15rem;font-weight:500}
+.soft p{margin:9px auto 0;font-size:.9rem;line-height:1.7;color:var(--ink2);max-width:30ch}
+
+.tabs{display:flex;justify-content:space-around;padding:8px 6px 15px;border-top:1px solid var(--line);background:var(--surf);flex:none}
+.tab{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.62rem;font-weight:400;color:var(--ink3);
+  cursor:pointer;background:none;border:none;font-family:inherit;padding:2px 12px}
+.tab svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab.on{color:var(--sky);font-weight:500}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="demo-banner"><b>👋 זו הדגמה בלבד.</b> כל מה שמוצג כאן — הדגים, המספרים, החנות — הוא להמחשת העיצוב ואינו אקווריום אמיתי. האפליקציה עצמה נמצאת בבנייה.</div>
+
+<div class="dev"><div class="scr">
+
+<div class="sb"><span>9:41</span><span class="r">
+  <svg viewBox="0 0 18 12"><path d="M1 8h2v4H1zM5 6h2v6H5zM9 3h2v9H9zM13 0h2v12h-2z"/></svg>
+  <svg viewBox="0 0 20 12"><rect x="0" y="1" width="16" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.2" style="stroke:var(--ink2)"/><rect x="1.6" y="2.6" width="11" height="6.8" rx="1.2"/><rect x="17.4" y="4.2" width="1.6" height="3.6" rx=".8"/></svg>
+</span></div>
+
+<div class="ab">
+  <div class="brand">
+    <svg class="mk" viewBox="0 0 72 56">
+      <defs>
+        <linearGradient id="gb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1B3A8C"/><stop offset=".55" stop-color="#2B7CC9"/><stop offset="1" stop-color="#5BC5E8"/></linearGradient>
+        <linearGradient id="gg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3E8C36"/><stop offset=".6" stop-color="#8CC63F"/><stop offset="1" stop-color="#D4A017"/></linearGradient>
+      </defs>
+      <path d="M8 30c10-14 30-22 46-20 4 .5 6 3 4 6-6 10-22 18-36 17-8-.6-12-2-14-3z" fill="url(#gb)"/>
+      <path d="M14 34c8-9 22-13 32-11-6 7-18 12-28 12-2 0-3-.4-4-1z" fill="#fff" opacity=".55"/>
+      <path d="M4 40c8-12 22-16 32-13-6 8-18 14-28 14-2 0-3-.3-4-1z" fill="url(#gg)"/>
+      <path d="M20 44c6-8 14-11 20-10-4 7-12 12-18 12-1 0-2-.6-2-2z" fill="url(#gg)" opacity=".85"/>
+      <path d="M30 32c5-3 11-4 14-3-2 3-8 6-13 6-1 0-1.6-1.4-1-3z" fill="#E8302A"/>
+      <path d="M12 42c4-2 9-3 11-2-2 3-6 5-10 5-1 0-1.6-1.6-1-3z" fill="#E8302A"/>
+      <circle cx="55" cy="14" r="3" fill="#5BC5E8"/><circle cx="49" cy="20" r="1.6" fill="#fff"/>
+      <circle cx="17" cy="27" r="2.2" fill="#2B7CC9"/><circle cx="12" cy="31" r="1.5" fill="#5BC5E8"/>
+    </svg>
+    <span class="wm">Riverium</span>
+    <span class="demo-chip">הדגמה</span>
+  </div>
+  <button class="iconbtn" id="theme" aria-label="תאורה">
+    <svg viewBox="0 0 24 24"><path d="M12 3v2m0 14v2M5.6 5.6L7 7m10 10l1.4 1.4M3 12h2m14 0h2M5.6 18.4L7 17m10-10l1.4-1.4"/><circle cx="12" cy="12" r="4"/></svg>
+  </button>
+</div>
+
+<div class="body" id="body">
+
+  <!-- ═══════ HOME ═══════ -->
+  <div class="pg" id="p-home">
+    <div class="photo">
+      <canvas id="shot"></canvas><div class="pv"></div>
+      <div class="pt"><b>אקווריום הסלון</b><span>115 × 35 × 50</span></div>
+      <div class="pb"><span class="chip"><s></s><span id="chip">נראה טוב</span></span><em>22.8</em></div>
+    </div>
+
+    <div class="bg-only">
+      <div class="card" style="margin-top:14px">
+        <div class="state">
+          <span class="ic"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <div><h3>הכול נראה טוב 🙂</h3><p>המים צלולים, אין אצות, והדגים נראים בריאים. אתה מחליף מים כל שבוע — וזה מצוין.</p></div>
+        </div>
+      </div>
+
+      <div class="hd">הצעד הבא שלך <small>דבר אחד בלבד</small></div>
+      <div class="card next">
+        <div class="task" style="padding:6px 0 2px"><span class="n">💧</span><div>
+          <div class="t">בדיקת מים ראשונה — 5 דקות</div>
+          <div class="s">אני מלווה אותך שלב-שלב, עם טיימר. בסוף תדע בדיוק איך המים שלך.</div>
+        </div></div>
+        <button class="cta" style="margin-top:11px"><span>בוא נתחיל — בדיקה מודרכת</span></button>
+      </div>
+
+      <details class="more">
+        <summary>עוד 2 דברים קטנים, כשיהיה לך רגע</summary>
+        <div class="task"><span class="n">📷</span><div><div class="t">תמונה אחת באור לבן</div><div class="s">התאורה הכחולה יפה — אבל מסתירה את הצבעים האמיתיים של הדגים.</div></div></div>
+        <div class="task"><span class="n">🌙</span><div><div class="t">תמונה של דגי הקרקעית בלילה</div><div class="s">הם ביישנים ומתחבאים ביום. צילום אחד בערב ישלים את הרשימה.</div></div></div>
+        <div class="tip"><b>למה בדיקת המים חשובה דווקא אצלך?</b>
+          <p>הדגים שלך הגיעו מאזורים שונים בעולם, ולכל אחד יש מים שהוא הכי אוהב. בדיקה אחת תגיד לנו אם כולם מרגישים בבית. שום דבר לא דחוף — פשוט טוב לדעת.</p></div>
+      </details>
+
+      <button class="quiet">מתכנן להוסיף דג או לשנות משהו? בדוק לפני שאתה משנה</button>
+    </div>
+
+    <div class="ad-only hide">
+      <div class="hd">נפח <small>2 חסרים</small></div>
+      <div class="rows">
+        <div class="rw"><div class="l">גולמי<small>115 × 35 × 50</small></div><div class="v">201.3 ל׳</div></div>
+        <div class="rw w"><div class="l">קו מים<small>אומדן מהתמונה</small></div><div class="v">≈ 45 ס״מ</div></div>
+        <div class="rw c"><div class="l">עומק המצע</div><div class="v">נדרש</div></div>
+        <div class="rw c"><div class="l">אבנים ועץ</div><div class="v">נדרש</div></div>
+        <div class="rw f"><div class="l">נטו משוער</div><div class="v">150–170 ל׳</div></div>
+      </div>
+      <div class="hd">ממצאים</div>
+      <div class="flag c"><b><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 9v4"/><circle cx="12" cy="16.4" r=".9" fill="currentColor" stroke="none"/></svg>חמישה ביוטופים במיכל אחד</b>
+        <p>אמזונס · טנגניקה · מלאווי · גינאה החדשה · מרכז אמריקה. אחת מושכת למים רכים, שלוש לקשים.</p></div>
+      <div class="flag c"><b><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 9v4"/><circle cx="12" cy="16.4" r=".9" fill="currentColor" stroke="none"/></svg>פרונטוזה טורף · מולי בגודל טרף</b>
+        <p>סיכון כיווני. כלל בטיחות קשיח שפועל על סיווג ולא על מספר.</p></div>
+      <div class="flag w"><b><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16.2" r=".9" fill="currentColor" stroke="none"/></svg>רוחב 35 ס״מ מול גודל בוגר</b>
+        <p>נבדקת התאמה היום · בעוד חצי שנה · בבגרות.</p></div>
+      <div class="hd">איכות הנתונים</div>
+      <div class="card"><div style="display:flex;align-items:center;gap:13px">
+        <div style="font-size:2.2rem;font-weight:500;color:var(--warn);font-variant-numeric:tabular-nums;line-height:1">34<span style="font-size:.8rem;color:var(--ink3)">/100</span></div>
+        <div style="flex:1"><p style="margin:0;font-size:.79rem;line-height:1.55;color:var(--ink2)">עלה מ-18 בזכות התמונות. הממצאים תקפים למרות הציון.</p>
+        <div style="height:7px;border-radius:99px;background:var(--surf2);overflow:hidden;margin-top:8px;direction:ltr"><i style="display:block;height:100%;width:34%;border-radius:99px;background:linear-gradient(90deg,var(--crit),var(--warn),var(--ok))"></i></div></div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ═══════ FISH ═══════ -->
+  <div class="pg hide" id="p-fish">
+    <div class="hd">הדגים שלך <small id="fcount">7 סוגים · 25+ דגים</small></div>
+    <div class="card" style="padding:3px 15px 10px" id="fishlist"></div>
+
+    <div class="ad-only hide">
+      <div class="hd">לא נמצא <small>ואמרת שיש</small></div>
+      <div class="flag w"><b><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l4.5 4.5"/></svg>L-Numbers — לא נראו בשלוש תמונות</b>
+        <p>דגי קרקעית רבים ליליים. זה לא כישלון זיהוי — זה ממצא. צלם בלילה או בזמן האכלה על הקרקעית.</p></div>
+      <div class="flag w"><b><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l4.5 4.5"/></svg>חלזונות — לא נראו</b>
+        <p>צילום קרוב על הזכוכית או המצע יפתור.</p></div>
+      <div class="hd">ציקליד מפוספס — לא הוכרע</div>
+      <div class="card"><p style="margin:0;font-size:.81rem;line-height:1.62;color:var(--ink2)">
+        על הקרקעית במרכז. שני מועמדים: יוליד׳ טנגניקאי, או פרונטוזה צעיר.
+        <b style="color:var(--ink)">המערכת מבקשת צילום ייעודי</b> במקום לנחש.</p></div>
+    </div>
+
+    <div class="bg-only">
+      <div class="tip"><b>שני דברים שכדאי לצלם</b>
+        <p>ה-L שלך לא נראו באף תמונה — הם ליליים ומתחבאים. וגם החלזונות. צילום אחד של כל אחד ישלים לי את הרשימה.</p></div>
+    </div>
+
+    <button class="cta"><span>הוסף דג</span></button>
+    <p class="note">כל דג שתוסיף מקבל תעודה משלו — מתי הגיע, מאיפה, כמה גדל, ומה אכל.</p>
+  </div>
+
+  <!-- ═══════ WATER ═══════ -->
+  <div class="pg hide" id="p-water">
+    <div class="bg-only">
+      <div class="hd">המים שלך</div>
+      <div class="card">
+        <div class="state">
+          <span class="ic" style="background:var(--warn-f)"><svg viewBox="0 0 24 24" style="stroke:var(--warn)"><path d="M12 3s6 6.5 6 10.5A6 6 0 016 13.5C6 9.5 12 3 12 3z"/></svg></span>
+          <div><h3>עוד לא בדקנו את המים</h3><p>זה לוקח 5 דקות, ואני מלווה אותך שלב-שלב. לא צריך להבין כלום מראש.</p></div>
+        </div>
+        <div class="mini">
+          <div class="mn g"><div class="k">החלפה</div><div class="v">כל שבוע</div></div>
+          <div class="mn w"><div class="k">בדיקה אחרונה</div><div class="v">—</div></div>
+          <div class="mn"><div class="k">טמפרטורה</div><div class="v">—</div></div>
+        </div>
+      </div>
+      <div class="tip"><b>למה זה חשוב אצלך במיוחד</b>
+        <p>יש לך דגים מכמה מקומות בעולם. בדיקה אחת של הקשיות תגיד לי לאיזה כיוון המים שלך נוטים — וזה מה שיקבע אם כולם במקום טוב.</p></div>
+      <button class="cta"><span>התחל בדיקה מודרכת</span></button>
+    </div>
+
+    <div class="ad-only hide">
+      <div class="hd">ניטראט · 30 יום <small>נתוני הדגמה</small></div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div><div style="font-size:1.5rem;font-weight:500;font-variant-numeric:tabular-nums">28<span style="font-size:.7rem;color:var(--ink3)"> mg/L</span></div>
+          <div style="font-size:.72rem;color:var(--warn);margin-top:2px">עולה · +14 בשבוע</div></div>
+        </div>
+        <div class="plot"><svg id="c-no3" viewBox="0 0 320 132"></svg></div>
+        <div class="leg">
+          <span><i style="background:linear-gradient(90deg,var(--ok),var(--warn),var(--crit))"></i>מדידה</span>
+          <span><i class="sw" style="background:var(--ok-f);border:1px solid var(--ok)"></i>טווח יעד</span>
+          <span><i class="sw" style="background:transparent;border:1.3px solid var(--ink2);border-radius:50%"></i>אירוע</span>
+        </div>
+      </div>
+      <p class="note">האירועים על הציר: החלפת מים · שינוי מזון · תוספת דגים. הסימון מראה <b>מה קרה מתי</b> — לא מה גרם למה.</p>
+
+      <div class="hd">מדדים נוספים <small>כל אחד בציר שלו</small></div>
+      <div class="mult" id="mult"></div>
+      <p class="note">שני מדדים על ציר משותף יוצרים ״קשר״ שהמעצב המציא. לכן — גרף נפרד לכל אחד.</p>
+      <button class="cta"><span>התחל בדיקה מודרכת</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════ SHOP ═══════ -->
+  <div class="pg hide" id="p-shop">
+    <div class="hd">חנות Riverium <small>מותאם לאקווריום שלך</small></div>
+    <div id="shoplist"></div>
+    <p class="note" style="margin-top:14px">
+      ההמלצות כאן מחושבות <b>רק לפי האקווריום שלך</b>. מחיר, מלאי ומבצעים
+      לא משפיעים על ההמלצה — גם כשהחנות היא שלנו. ככה תוכל לסמוך עליה.
+    </p>
+  </div>
+
+  <div class="mode" role="group" aria-label="רמת תצוגה">
+    <span class="mlab">תצוגה</span>
+    <button id="m-b" aria-pressed="true">פשוטה</button>
+    <button id="m-a" aria-pressed="false">מקצועית</button>
+  </div>
+
+</div>
+
+<!-- ══════ FLOW SHEETS ══════ -->
+<div class="sheet" id="sh-check">
+  <div class="sh-h"><button class="x" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div class="ti"><b>בדיקה לפני שינוי</b><small id="ck-sub">מה אתה מתכנן לעשות?</small></div></div>
+  <div class="steps"><i class="on"></i><i id="ck-s2"></i></div>
+  <div class="sh-b" id="ck-body"></div>
+  <div class="sh-f" id="ck-foot"></div>
+</div>
+
+<div class="sheet" id="sh-add">
+  <div class="sh-h"><button class="x" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div class="ti"><b>הוספת דג</b><small id="ad-sub">צלם או בחר מהרשימה</small></div></div>
+  <div class="steps"><i class="on" id="ad-s1"></i><i id="ad-s2"></i><i id="ad-s3"></i></div>
+  <div class="sh-b" id="ad-body"></div>
+  <div class="sh-f" id="ad-foot"></div>
+</div>
+
+<div class="sheet" id="sh-test">
+  <div class="sh-h"><button class="x" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div class="ti"><b>בדיקת מים מודרכת</b><small id="ts-sub">בחר את הערכה שלך</small></div></div>
+  <div class="sh-b" id="ts-body"></div>
+  <div class="sh-f" id="ts-foot"></div>
+</div>
+
+<div class="sheet" id="sh-setup">
+  <div class="sh-h"><button class="x" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div class="ti"><b>הקמת אקווריום</b><small id="su-sub">מידות ונפח</small></div></div>
+  <div class="steps"><i class="on" id="su-s1"></i><i id="su-s2"></i></div>
+  <div class="sh-b" id="su-body"></div>
+  <div class="sh-f" id="su-foot"></div>
+</div>
+
+<div class="sheet" id="sh-join">
+  <div class="sh-h"><button class="x" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div class="ti"><b>הרשמה ל-Riverium</b><small id="jn-sub">שלב 1 מתוך 3</small></div></div>
+  <div class="steps"><i class="on" id="jn-s1"></i><i id="jn-s2"></i><i id="jn-s3"></i></div>
+  <div class="sh-b" id="jn-body"></div>
+  <div class="sh-f" id="jn-foot"></div>
+</div>
+
+<div class="sheet" id="sh-loss">
+  <div class="sh-h"><button class="x" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div class="ti"><b id="ls-title">רישום אובדן</b><small id="ls-sub"></small></div></div>
+  <div class="sh-b" id="ls-body"></div>
+  <div class="sh-f" id="ls-foot"></div>
+</div>
+
+<nav class="tabs" id="tabs">
+  <button class="tab on" data-p="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>הבית</button>
+  <button class="tab" data-p="fish"><svg viewBox="0 0 24 24"><path d="M3 12c4-6 14-6 18 0-4 6-14 6-18 0z"/><circle cx="16" cy="12" r="1.1" fill="currentColor" stroke="none"/></svg>דגים</button>
+  <button class="tab" data-p="water"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 10.5A6 6 0 016 13.5C6 9.5 12 3 12 3z"/></svg>מים</button>
+  <button class="tab" data-p="shop"><svg viewBox="0 0 24 24"><path d="M4 7h16l-1.4 12.2a2 2 0 01-2 1.8H7.4a2 2 0 01-2-1.8z"/><path d="M9 7a3 3 0 016 0"/></svg>חנות</button>
+</nav>
+
+</div></div>
+
+<script>
+(function(){
+"use strict";
+var reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+var grain=document.createElement('canvas');grain.width=grain.height=100;
+(function(){var g=grain.getContext('2d'),d=g.createImageData(100,100),p=d.data;
+ for(var i=0;i<p.length;i+=4){var v=195+Math.floor(Math.random()*55);p[i]=p[i+1]=p[i+2]=v;p[i+3]=18;}
+ g.putImageData(d,0,0);})();
+
+function bokeh(cvs,cols,t,dark){
+  var c=cvs.getContext('2d'),dpr=Math.min(window.devicePixelRatio||1,2);
+  var w=cvs.clientWidth||300,h=cvs.clientHeight||120;
+  if(!w||!h)return;
+  if(cvs.width!==Math.floor(w*dpr)){cvs.width=Math.floor(w*dpr);cvs.height=Math.floor(h*dpr);}
+  c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);
+  var bg=c.createLinearGradient(0,0,0,h);
+  bg.addColorStop(0,dark?'#0B2A5E':'#1E56B8');bg.addColorStop(.62,dark?'#071C3E':'#123C88');bg.addColorStop(1,dark?'#2A2E20':'#E4DCC4');
+  c.fillStyle=bg;c.fillRect(0,0,w,h);
+  for(var i=0;i<cols.length;i++)for(var k=0;k<3;k++){
+    var s=i*8+k*15;
+    var px=(Math.sin(s*1.7)*.5+.5)*w+Math.sin(t*.09+s)*w*.02;
+    var py=(Math.cos(s*2.1)*.5+.5)*h*.9+Math.cos(t*.08+s)*h*.05;
+    var pr=(.17+((s%6)/15))*Math.max(w,h)*.8;
+    var g2=c.createRadialGradient(px,py,0,px,py,pr);
+    g2.addColorStop(0,cols[i][0]);g2.addColorStop(1,'rgba(0,0,0,0)');
+    c.globalAlpha=cols[i][1]*.27;c.fillStyle=g2;c.fillRect(px-pr,py-pr,pr*2,pr*2);
+  }
+  c.globalAlpha=1;
+  var vg=c.createRadialGradient(w*.5,h*.4,Math.min(w,h)*.2,w*.5,h*.5,Math.max(w,h)*.7);
+  vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(2,14,32,.4)');
+  c.fillStyle=vg;c.fillRect(0,0,w,h);
+  c.fillStyle=c.createPattern(grain,'repeat');c.fillRect(0,0,w,h);
+}
+var TANK=[['#2B7CC9',.55],['#1B3A8C',.6],['#5BC5E8',.4],['#E8853A',.3],['#8CC63F',.26],['#E8302A',.2]];
+var shot=document.getElementById('shot'),raf=null;
+function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
+function frame(ms){var t=ms/1000;bokeh(shot,TANK,t,isDark());raf=requestAnimationFrame(frame);}
+bokeh(shot,TANK,0,false);
+if(!reduce.matches)raf=requestAnimationFrame(frame);
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden){if(raf){cancelAnimationFrame(raf);raf=null;}}
+  else if(!reduce.matches&&!raf){raf=requestAnimationFrame(frame);}});
+
+/* ── fish list ── */
+var FISH=[
+ {n:'פרונטוזה',s:'Cyphotilapia · טנגניקה',c:'5–6',p:92,cl:'h',col:[['#2B4C9E',.7],['#E8F0F8',.5],['#12294D',.6]]},
+ {n:'דיסקוס',s:'Symphysodon · אמזונס',c:'2',p:89,cl:'h',col:[['#2B9CC9',.7],['#5BC5E8',.5],['#1B3A8C',.5]]},
+ {n:'קורידורס',s:'Corydoras · אמזונס',c:'2+',p:88,cl:'h',col:[['#8A8272',.7],['#C9BFA8',.5],['#3A3428',.5]]},
+ {n:'דגי קשת',s:'Melanotaenia · גינאה החדשה',c:'3–5',p:86,cl:'h',col:[['#E84A3A',.6],['#4BAEDC',.6],['#8CC63F',.4]]},
+ {n:'ג׳אופגוס',s:'Geophagus · אמזונס',c:'1',p:74,cl:'m',col:[['#C9A05A',.7],['#8CC63F',.4],['#5A4A2A',.5]]},
+ {n:'מולי ופלטי',s:'Poecilia · Xiphophorus',c:'6+',p:70,cl:'m',col:[['#E86A1A',.7],['#1A1A1A',.5],['#E8302A',.4]]},
+ {n:'ציקלידים צהובים',s:'מועמד: מלאווי · לא היה ברשימה',c:'4–6',p:58,cl:'m',col:[['#E8C21A',.7],['#D4A017',.6],['#8A6A0A',.4]]}
+];
+var fl=document.getElementById('fishlist');
+FISH.forEach(function(f){
+  var d=document.createElement('div');d.className='fish';
+  d.innerHTML='<span class="av"><canvas></canvas></span>'+
+    '<span class="nm"><b>'+f.n+'</b><small>'+f.s+'</small></span>'+
+    '<span class="rt"><span class="cnt">'+f.c+'</span><br><span class="pct '+f.cl+'" style="margin-top:4px;display:inline-block">'+f.p+'%</span></span>';
+  fl.appendChild(d);
+  var cn=d.querySelector('canvas');
+  requestAnimationFrame(function(){bokeh(cn,f.col,f.p,false);});
+});
+
+/* ── charts ── */
+function el(t,a){var n=document.createElementNS('http://www.w3.org/2000/svg',t);for(var k in a)if(a[k]!=null)n.setAttribute(k,a[k]);return n;}
+var D=[12,15,19,22,11,15,19,23,27,14,18,22,26,30,18,22,26,28];
+var EV=[{i:4,t:'החלפת מים'},{i:9,t:'שינוי מזון'},{i:14,t:'נוספו דגים'}];
+function no3(){
+  var s=document.getElementById('c-no3');while(s.firstChild)s.removeChild(s.firstChild);
+  var W=320,H=132,B={l:26,r:8,t:8,b:26},iw=W-B.l-B.r,ih=H-B.t-B.b,mx=44,n=D.length;
+  var X=function(i){return B.l+i/(n-1)*iw;},Y=function(v){return B.t+ih-v/mx*ih;};
+  s.appendChild(el('rect',{x:B.l,y:Y(25),width:iw,height:Y(0)-Y(25),fill:'var(--ok-f)'}));
+  s.appendChild(el('rect',{x:B.l,y:Y(40),width:iw,height:Y(25)-Y(40),fill:'var(--warn-f)'}));
+  s.appendChild(el('rect',{x:B.l,y:Y(mx),width:iw,height:Y(40)-Y(mx),fill:'var(--crit-f)'}));
+  [0,20,40].forEach(function(v){
+    s.appendChild(el('line',{x1:B.l,x2:B.l+iw,y1:Y(v),y2:Y(v),class:'grid'}));
+    var t=el('text',{x:B.l-6,y:Y(v)+3,class:'axl','text-anchor':'end'});t.textContent=v;s.appendChild(t);});
+  var defs=el('defs',{}),lg=el('linearGradient',{id:'zg',gradientUnits:'userSpaceOnUse',x1:0,y1:Y(mx),x2:0,y2:Y(0)});
+  var off=function(v){return ((Y(v)-Y(mx))/(Y(0)-Y(mx))*100).toFixed(1)+'%';};
+  [[off(mx),'var(--crit)'],[off(41),'var(--crit)'],[off(39),'var(--warn)'],[off(26),'var(--warn)'],[off(24),'var(--ok)'],[off(0),'var(--ok)']]
+    .forEach(function(o){lg.appendChild(el('stop',{offset:o[0],'stop-color':o[1]}));});
+  defs.appendChild(lg);s.appendChild(defs);
+  EV.forEach(function(e){
+    s.appendChild(el('line',{x1:X(e.i),x2:X(e.i),y1:B.t,y2:B.t+ih,stroke:'var(--ink3)','stroke-width':1,'stroke-dasharray':'2 3',opacity:.6}));
+    var g=el('g',{});g.appendChild(el('circle',{cx:X(e.i),cy:B.t+ih+11,r:4.6,fill:'var(--surf)',stroke:'var(--ink2)','stroke-width':1.3}));
+    var ti=el('title',{});ti.textContent=e.t;g.appendChild(ti);s.appendChild(g);});
+  var pts=D.map(function(v,i){return X(i)+','+Y(v);}).join(' ');
+  s.appendChild(el('polygon',{points:X(0)+','+Y(0)+' '+pts+' '+X(n-1)+','+Y(0),fill:'url(#zg)',opacity:.14}));
+  s.appendChild(el('polyline',{points:pts,fill:'none',stroke:'url(#zg)','stroke-width':2.4,'stroke-linecap':'round','stroke-linejoin':'round'}));
+  s.appendChild(el('circle',{cx:X(n-1),cy:Y(D[n-1]),r:4.4,fill:'var(--warn)',stroke:'var(--surf)','stroke-width':2}));
+}
+var PAR=[{k:'pH',v:'6.8',n:'יציב',st:'ok',d:[7.2,7.1,7,6.9,6.9,6.8,6.8],lo:6.5,hi:7.4,dm:[6.2,7.6]},
+ {k:'GH',v:'6',n:'יורד',st:'ok',d:[8,8,7,7,6,6,6],lo:5,hi:12,dm:[3,14]},
+ {k:'KH',v:'2',n:'מתחת לטווח',st:'w',d:[5,4,4,3,3,2,2],lo:3,hi:8,dm:[0,10]},
+ {k:'TDS',v:'232',n:'מעל הטווח',st:'w',d:[180,190,200,210,218,226,232],lo:120,hi:220,dm:[100,260]}];
+function mult(){
+  var h=document.getElementById('mult');h.innerHTML='';
+  PAR.forEach(function(p){
+    var col=p.st==='ok'?'var(--ok)':'var(--warn)';
+    var b=document.createElement('div');b.className='cell';
+    b.innerHTML='<div class="ch"><span class="ct">'+p.k+'</span><span class="cv" style="color:'+col+'">'+p.v+'</span></div><div class="cs">'+p.n+'</div><div class="plot"></div>';
+    h.appendChild(b);
+    var W=140,H=44,B={l:18,r:4,t:5,b:5},iw=W-B.l-B.r,ih=H-B.t-B.b,lo=p.dm[0],hi=p.dm[1];
+    var s=el('svg',{viewBox:'0 0 '+W+' '+H});
+    var X=function(i){return B.l+i/(p.d.length-1)*iw;},Y=function(v){return B.t+ih-(v-lo)/(hi-lo)*ih;};
+    s.appendChild(el('rect',{x:B.l,y:Y(p.hi),width:iw,height:Y(p.lo)-Y(p.hi),fill:'var(--ok-f)'}));
+    var t1=el('text',{x:B.l-4,y:Y(hi)+7,class:'axl','text-anchor':'end'});t1.textContent=hi;s.appendChild(t1);
+    var t2=el('text',{x:B.l-4,y:Y(lo)-1,class:'axl','text-anchor':'end'});t2.textContent=lo;s.appendChild(t2);
+    var pl=p.d.map(function(v,i){return X(i)+','+Y(v);}).join(' ');
+    s.appendChild(el('polygon',{points:X(0)+','+(B.t+ih)+' '+pl+' '+X(p.d.length-1)+','+(B.t+ih),fill:col,opacity:.13}));
+    s.appendChild(el('polyline',{points:pl,fill:'none',stroke:col,'stroke-width':1.9,'stroke-linecap':'round','stroke-linejoin':'round'}));
+    s.appendChild(el('circle',{cx:X(p.d.length-1),cy:Y(p.d[p.d.length-1]),r:3,fill:col,stroke:'var(--surf)','stroke-width':1.5}));
+    b.querySelector('.plot').appendChild(s);
+  });
+}
+
+/* ── shop ── */
+var DEPTS=['הכול','אקווריומים','ציוד','עיצוב ומצע','תכשירים','מזון','צמחי מים'];
+var SHOP=[
+ {d:'תכשירים',n:'Seachem פריים אנטי כלור',s:'מנטרל כלור וכלוראמין · 100 מ״ל',p:'₪55',tag:'במלאי',
+  v:'w',vt:'המינון תלוי בנפח — ואני עוד לא יודע אותו',
+  vp:'המינון על הבקבוק הוא לכל 100 ליטר <b>מים</b>. המיכל שלך הוא 201 ליטר ברוטו אבל <b>150–170 נטו</b> — טווח, כי חסרים עומק מצע ונפח אבנים. חישוב לפי ברוטו הוא עודף של כ-28%.',
+  extra:'השלם שני נתונים ואתן לך מינון מדויק במ״ל.',
+  col:[['#2B7CC9',.6],['#E8F0F8',.5],['#1B3A8C',.5]],buy:'השלם נתוני נפח',dis:false},
+
+ {d:'מזון',n:'VITALIS מזון פלק פלטס צמחוני',s:'300 גרם · צמחוני',p:'₪115',tag:'מבצע',
+  v:'w',vt:'התאמה 61 מתוך 100',
+  vp:'<b>מכסה:</b> הפלקואים והג׳אופגוס. <b>לא מכסה:</b> הדיסקוס והפרונטוזה — שניהם נוטים לחלבון מן החי, ומזון צמחוני בלבד לא יספיק להם.',
+  extra:'הגרגיר צף. דגי הקרקעית שלך לא יגיעו אליו.',
+  col:[['#8CC63F',.6],['#4E7A18',.6],['#C9D64A',.4]],buy:'הוסף לסל',dis:false},
+
+ {d:'מזון',n:'JBL ProNovo Neon Click XXS',s:'100 גרם · גרגיר זעיר',p:'₪45',tag:'במלאי',
+  v:'c',vt:'התאמה 24 מתוך 100',
+  vp:'‏XXS הוא גרגיר לנאונים ולדגים זעירים. באקווריום שלך יש <b>דיסקוס, פרונטוזה וג׳אופגוס</b> — הגרגיר קטן מדי מכדי שיזהו אותו כמזון.',
+  extra:'מתאים אם תוסיף להקת נאונים. היום — לא.',
+  col:[['#E8853A',.6],['#C9532A',.6],['#F0A24E',.4]],buy:'לא מתאים לאוכלוסייה שלך',dis:true},
+
+ {d:'ציוד',n:'Fluval FX6',s:'מסנן חיצוני · לאקווריומים גדולים',p:'₪1,999',tag:'במלאי',
+  v:'ok',vt:'מתאים — ובמרווח',
+  vp:'לעומס שיש לך — שבעה סוגים, ציקלידים גדולים והאכלה חלבונית — מסנן בקיבולת הזו נותן <b>מרווח ביטחון</b>, לא רק התאמה על הנייר.',
+  extra:'הספיקה הנקובה אינה הספיקה בפועל. אחרי מדיה וגובה הרמה — נמדוד.',
+  col:[['#12294D',.7],['#2B4C9E',.5],['#5BC5E8',.3]],buy:'הוסף לסל',dis:false},
+
+ {d:'אקווריומים',n:'Aquael Opti-Set 240',s:'מערכת מלאה עם ארון',p:'₪3,449',tag:'אזל המלאי',
+  v:'w',vt:'רחב יותר מהמיכל שלך',
+  vp:'הרוחב הגדול יותר פותר בדיוק את מה שסימנתי — 35 ס״מ צר לפרונטוזה ולדיסקוס בוגרים.',
+  extra:'אזל המלאי. אעדכן אותך כשיחזור.',
+  col:[['#5BC5E8',.5],['#12294D',.6],['#E8F0F8',.4]],buy:'עדכנו אותי כשחוזר',dis:false}
+];
+
+function shop(){
+  var h=document.getElementById('shoplist');h.innerHTML='';
+  var chips='<div style="display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;margin:0 -2px">';
+  DEPTS.forEach(function(d,i){
+    chips+='<button class="buy" style="width:auto;white-space:nowrap;padding:7px 14px;font-size:.76rem;'+
+      (i===0?'background:linear-gradient(150deg,var(--sky),var(--sky-d));color:#fff;border:none':'')+'">'+d+'</button>';
+  });
+  h.innerHTML=chips+'</div>';
+  SHOP.forEach(function(p){
+    var ic=p.v==='ok'?'<path d="M20 6L9 17l-5-5"/>':p.v==='w'?'<circle cx="12" cy="12" r="9"/><path d="M12 8v5"/>':'<path d="M12 3l9 16H3z"/><path d="M12 9v4"/>';
+    var d=document.createElement('div');d.className='prod';
+    d.innerHTML='<div class="im"><canvas></canvas><span class="tagp">'+p.tag+'</span></div>'+
+      '<div class="in"><b>'+p.n+'</b><small>'+p.d+' · '+p.s+'</small>'+
+      '<div class="pr"><span class="price">'+p.p+'</span></div>'+
+      '<div class="verd '+p.v+'"><b><svg viewBox="0 0 24 24">'+ic+'</svg>'+p.vt+'</b><p>'+p.vp+'</p>'+
+      (p.extra?'<p style="margin-top:6px;opacity:.85">'+p.extra+'</p>':'')+'</div>'+
+      '<button class="buy '+(p.dis?'':'p')+'"'+(p.dis?' disabled':'')+'>'+p.buy+'</button></div>';
+    h.appendChild(d);
+    var cn=d.querySelector('canvas');requestAnimationFrame(function(){bokeh(cn,p.col,p.p.length*3,false);});
+  });
+}
+
+/* ── nav + mode ── */
+var pages={home:document.getElementById('p-home'),fish:document.getElementById('p-fish'),
+  water:document.getElementById('p-water'),shop:document.getElementById('p-shop')};
+var beg=true,cur='home',bodyEl=document.getElementById('body');
+function applyMode(){
+  document.querySelectorAll('.bg-only').forEach(function(e){e.classList.toggle('hide',!beg);});
+  document.querySelectorAll('.ad-only').forEach(function(e){e.classList.toggle('hide',beg);});
+  document.getElementById('m-b').setAttribute('aria-pressed',String(beg));
+  document.getElementById('m-a').setAttribute('aria-pressed',String(!beg));
+  document.getElementById('chip').textContent=beg?'נראה טוב':'מתח בין 5 ביוטופים';
+  if(!beg&&cur==='water'){no3();mult();}
+}
+function go(p){
+  cur=p;
+  for(var k in pages)pages[k].classList.toggle('hide',k!==p);
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.dataset.p===p);});
+  applyMode();
+  bodyEl.scrollTo({top:0,behavior:reduce.matches?'auto':'smooth'});
+  if(p==='shop')shop();
+}
+document.getElementById('tabs').addEventListener('click',function(e){
+  var b=e.target.closest('.tab');if(b)go(b.dataset.p);});
+document.getElementById('m-b').addEventListener('click',function(){beg=true;applyMode();});
+document.getElementById('m-a').addEventListener('click',function(){beg=false;applyMode();});
+document.getElementById('theme').addEventListener('click',function(){
+  var r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');
+  bokeh(shot,TANK,0,isDark());});
+applyMode();
+
+/* ════════ FLOW ENGINE ════════ */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function open(id){document.getElementById(id).classList.add('up');}
+function shut(){document.querySelectorAll('.sheet').forEach(function(s){s.classList.remove('up');});}
+document.addEventListener('click',function(e){if(e.target.closest('[data-close]'))shut();});
+function ic(k){
+  var m={ok:'<path d="M20 6L9 17l-5-5"/>',w:'<circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16.2" r=".9" fill="currentColor" stroke="none"/>',
+    c:'<path d="M12 3l9 16H3z"/><path d="M12 9v4"/><circle cx="12" cy="16.4" r=".9" fill="currentColor" stroke="none"/>',
+    stop:'<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>'};
+  return m[k]||m.w;
+}
+
+/* ─── 1 · PRE-ACTION SAFETY CHECK (§136) ─── */
+var ACTIONS=[
+ {id:'media',t:'נקה או החלף את כל המדיה',s:'הספוגים והטבעות בסינון',
+  ic:'<path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/>',
+  v:'stop',vt:'אל תבצע',vs:'זו הפעולה שהורגת הכי הרבה אקווריומים.',
+  why:'כל המדיה יחד נושאת את כל המושבה החיידקית שמפרקת אמוניה. החלפה מלאה מוחקת אותה בבת אחת.',
+  will:'המיכל יחזור למחזור. אמוניה תעלה תוך 24–48 שעות, ויש לך דיסקוס — מהרגישים ביותר לאמוניה.',
+  alt:'נקה <em>שליש</em> בכל פעם, במים שהוצאת מהמיכל ולא במי ברז. חכה שבועיים בין חלק לחלק.',
+  conf:'גבוהה',dq:'הכלל הזה לא תלוי בנתונים חסרים — הוא נובע מהמבנה, לא ממדידה.',
+  block:true},
+ {id:'fish',t:'הוסף 6 דגים חדשים',s:'קבוצה בבת אחת',
+  ic:'<path d="M3 12c4-6 14-6 18 0-4 6-14 6-18 0z"/><circle cx="16" cy="12" r="1" fill="currentColor" stroke="none"/>',
+  v:'c',vt:'לא מומלץ',vs:'שתי סיבות נפרדות, וכל אחת מספיקה.',
+  why:'העומס הביולוגי כבר גבוה — 7 סוגים בנפח נטו משוער של 150–170 ליטר. ובנוסף, הוספה של קבוצה שלמה בבת אחת מקפיצה את העומס מהר מכפי שהסינון מתאים את עצמו.',
+  will:'אמוניה או ניטריט זמניים. אצל דיסקוס זה מספיק כדי לגרום נזק.',
+  alt:'אם בכל זאת — <em>2–3 דגים כל שבועיים</em>, עם בדיקת אמוניה לפני כל תוספת.',
+  conf:'בינונית',dq:'הערכת העומס נשענת על נפח משוער ועל כמויות שלא הזנת. הכיוון ברור; המספר המדויק לא.'},
+ {id:'temp',t:'העלה טמפרטורה ל-30°',s:'לטיפול או להאצת חילוף חומרים',
+  ic:'<path d="M14 14.8V5a2 2 0 10-4 0v9.8a4 4 0 104 0z"/>',
+  v:'w',vt:'מותר, בתנאים',vs:'טוב לחלק מהדגים שלך, פחות לאחרים.',
+  why:'לדיסקוס טמפרטורה גבוהה מתאימה. לפרונטוזה — פחות. הם מגיעים מסביבות שונות, וזו בדיוק נקודת המתח שסימנתי לך.',
+  will:'חמצן מומס יורד ככל שהטמפרטורה עולה, והדגים הגדולים ירגישו את זה ראשונים.',
+  alt:'אם אתה מעלה — <em>הוסף אוורור</em>, ועלה בהדרגה, לא בבת אחת.',
+  conf:'בינונית',dq:'טווחי הטמפרטורה של שני המינים עדיין לא מאומתים במאגר. הכיוון נובע מהשיוך הגאוגרפי.'},
+ {id:'water',t:'החלף 80% מהמים',s:'במקום 25% הרגילים',
+  ic:'<path d="M12 3s6 6.5 6 10.5A6 6 0 016 13.5C6 9.5 12 3 12 3z"/>',
+  v:'w',vt:'מותר, בתנאים',vs:'החלפה גדולה היא שינוי סביבתי חד.',
+  why:'אתה מחליף 25% בשבוע — המיכל התייצב סביב הקצב הזה. קפיצה ל-80% משנה טמפרטורה, קשיות ו-pH בבת אחת.',
+  will:'הדגים הרגישים יגיבו לשינוי עצמו, לא למים החדשים.',
+  alt:'התאם <em>טמפרטורה</em> למים החדשים לפני ההכנסה, והוסף מנטרל כלור לפי הנפח האמיתי — לא לפי 200 ליטר.',
+  conf:'בינונית',dq:'הנפח נטו עדיין טווח (150–170). זה משפיע ישירות על מינון המנטרל.'},
+ {id:'med',t:'הוסף תרופה',s:'טיפול נגד טפילים',
+  ic:'<path d="M9 4h6v3H9zM7 7h10l-1 13H8z"/>',
+  v:'w',vt:'צריך עוד מידע',vs:'אני לא אתן מינון בלי שלושה נתונים.',
+  why:'מינון תרופה נגזר מהנפח האמיתי, לא מהנפח על הקרטון. ואצלך הנפח עדיין טווח.',
+  will:'מינון לפי 200 ליטר בזמן שיש 155 הוא <em>עודף של 29%</em>. אצל דגים חסרי קשקשים זה מסוכן.',
+  alt:'סגור קודם את <em>עומק המצע</em> ואת <em>קו המים</em>. ואז אשאל אותך איזו תרופה בדיוק — כי המינון הוא של היצרן, לא של הקטגוריה.',
+  conf:'—',dq:'חסר: נפח מדויק · שם המוצר · האם יש חסרי קשקשים · האם יש חלזונות שרגישים.'}
+];
+var ckPick=null;
+function ckList(){
+  document.getElementById('ck-sub').textContent='מה אתה מתכנן לעשות?';
+  document.getElementById('ck-s2').classList.remove('on');
+  var h='<p style="margin:0 0 13px;font-size:.85rem;color:var(--ink2);line-height:1.62">'+
+    'אני בודק את הפעולה מול האקווריום שלך <b>לפני</b> שאתה מבצע אותה — לא אחרי.</p>';
+  ACTIONS.forEach(function(a){
+    h+='<button class="opt" data-act="'+a.id+'"><span class="oi"><svg viewBox="0 0 24 24">'+a.ic+'</svg></span>'+
+      '<span class="ot"><b>'+esc(a.t)+'</b><small>'+esc(a.s)+'</small></span><span class="oc"></span></button>';
+  });
+  document.getElementById('ck-body').innerHTML=h;
+  document.getElementById('ck-foot').innerHTML='<button class="cta" id="ck-go" disabled style="opacity:.4"><span>בדוק את הפעולה</span></button>';
+  ckPick=null;
+}
+function ckVerdict(a){
+  document.getElementById('ck-sub').textContent=a.t;
+  document.getElementById('ck-s2').classList.add('on');
+  var h='<div class="verdict '+a.v+'"><div class="vi"><svg viewBox="0 0 24 24">'+ic(a.v)+'</svg></div>'+
+    '<h3>'+esc(a.vt)+'</h3><p>'+esc(a.vs)+'</p></div><div class="exp">'+
+    '<div class="ex"><b>למה</b><p>'+a.why+'</p></div>'+
+    '<div class="ex"><b>מה עלול לקרות</b><p>'+a.will+'</p></div>'+
+    '<div class="ex"><b>מה כן</b><p>'+a.alt+'</p></div>'+
+    '<div class="ex"><b>רמת ודאות · '+a.conf+'</b><p>'+a.dq+'</p></div></div>';
+  if(a.block) h+='<p class="note" style="margin-top:12px">אין כאן כפתור ״בצע בכל זאת״. כלל בטיחות קשיח חוסם את כולם — <b>גם את בעל האקווריום</b>.</p>';
+  document.getElementById('ck-body').innerHTML=h;
+  document.getElementById('ck-foot').innerHTML = a.block
+    ? '<button class="hard" data-close>הבנתי, לא מבצע</button><button class="ghost" id="ck-back">בדוק פעולה אחרת</button>'
+    : '<button class="cta"><span>הבנתי — בצע בכל זאת</span></button><button class="ghost" id="ck-back">בדוק פעולה אחרת</button>';
+}
+document.getElementById('ck-body').addEventListener('click',function(e){
+  var b=e.target.closest('[data-act]');if(!b)return;
+  document.querySelectorAll('#ck-body .opt').forEach(function(o){o.setAttribute('aria-pressed','false');});
+  b.setAttribute('aria-pressed','true');ckPick=b.dataset.act;
+  var g=document.getElementById('ck-go');if(g){g.disabled=false;g.style.opacity='1';}
+});
+document.getElementById('ck-foot').addEventListener('click',function(e){
+  if(e.target.closest('#ck-go')&&ckPick){ckVerdict(ACTIONS.filter(function(a){return a.id===ckPick;})[0]);}
+  if(e.target.closest('#ck-back'))ckList();
+});
+
+/* ─── 2 · ADD FISH (§30, §274) ─── */
+var CAND=[{n:'פלקו זברה · L-046',p:64,s:'Hypancistrus zebra'},
+          {n:'פלקו קינג טייגר · L-066',p:23,s:'Hypancistrus sp.'},
+          {n:'פלקו L-333',p:9,s:'Hypancistrus sp.'}];
+var adStep=1;
+function adRender(){
+  ['ad-s1','ad-s2','ad-s3'].forEach(function(i,k){document.getElementById(i).classList.toggle('on',k<adStep);});
+  var b=document.getElementById('ad-body'),f=document.getElementById('ad-foot');
+  if(adStep===1){
+    document.getElementById('ad-sub').textContent='שלב 1 — צילום';
+    b.innerHTML='<div style="height:190px;border-radius:17px;overflow:hidden;position:relative"><canvas id="ad-cam" style="width:100%;height:100%;display:block"></canvas>'+
+      '<div style="position:absolute;inset:22px;border:2px dashed rgba(255,255,255,.6);border-radius:14px"></div></div>'+
+      '<div class="tip" style="margin-top:12px"><b>לפני שאתה מצלם</b><p>אור לבן, בלי תאורת האקווריום ובלי פלאש. הדג במקביל לזכוכית. אם הוא לא בטוח — אבקש עוד זווית.</p></div>';
+    f.innerHTML='<button class="cta" id="ad-next"><span>צלם</span></button>';
+    var c=document.getElementById('ad-cam');
+    requestAnimationFrame(function(){bokeh(c,[['#2B7CC9',.6],['#1B3A8C',.6],['#D4A017',.4],['#3A3428',.5]],3,false);});
+  } else if(adStep===2){
+    document.getElementById('ad-sub').textContent='שלב 2 — זיהוי';
+    var h='<p style="margin:0 0 11px;font-size:.85rem;color:var(--ink2);line-height:1.6">שלושה מועמדים. <b>אף אחד לא מספיק בטוח.</b></p>';
+    CAND.forEach(function(c,i){
+      var cl=c.p>=80?'h':c.p>=50?'m':'n';
+      h+='<button class="opt"'+(i===0?' aria-pressed="true"':'')+'><span class="ot"><b>'+esc(c.n)+'</b><small>'+esc(c.s)+'</small></span>'+
+        '<span class="pct '+cl+'">'+c.p+'%</span></button>';
+    });
+    h+='<div class="flag w" style="margin-top:12px"><b><svg viewBox="0 0 24 24"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><circle cx="12" cy="13" r="3"/></svg>אני צריך עוד תמונה</b>'+
+      '<p>‎64% נמוך מדי בשביל להוסיף דג לאקווריום שלך. <b>מה יעזור:</b> צילום מלמעלה, ותקריב על דגם הפסים בראש. ‎L-046 ו-L-066 נבדלים בעיקר שם.</p></div>';
+    b.innerHTML=h;
+    f.innerHTML='<button class="cta" id="ad-next"><span>צלם עוד זווית</span></button>'+
+      '<button class="ghost" id="ad-skip">אשר את המועמד הראשון בכל זאת</button>';
+  } else {
+    document.getElementById('ad-sub').textContent='שלב 3 — התאמה';
+    b.innerHTML='<div class="verdict ok"><div class="vi"><svg viewBox="0 0 24 24">'+ic('ok')+'</svg></div>'+
+      '<h3>מתאים לאקווריום שלך</h3><p>‎L-046 · פלקו זברה · 91% ודאות אחרי התמונה השנייה</p></div>'+
+      '<div class="exp"><div class="ex"><b>למה כן</b><p>דג קרקעית שאתה כבר מגדל בהצלחה, ובגודל שאינו טרף לפרונטוזה.</p></div>'+
+      '<div class="ex"><b>מה להכין</b><p>מסתור נוסף. הוא לילי, וטריטוריאלי כלפי בני מינו.</p></div>'+
+      '<div class="ex"><b>נתוני טיפול</b><p><em>לא מאומתים.</em> אין לי עדיין ערכים מקצועיים מאושרים ל-L-046. אציג מה שידוע, מסומן כלא מאומת — ולא אבנה עליו כלל בטיחות.</p></div></div>';
+    f.innerHTML='<button class="cta" data-close><span>הוסף לאקווריום</span></button>';
+  }
+}
+document.getElementById('ad-foot').addEventListener('click',function(e){
+  if(e.target.closest('#ad-next')){adStep++;if(adStep>3)adStep=3;adRender();}
+  if(e.target.closest('#ad-skip')){adStep=3;adRender();}
+});
+
+/* ─── 3 · GUIDED TEST (§245–§250) ─── */
+var KITS=[
+ {id:'strip',n:'מקלוני 6-ב-1',m:'יצרן א׳ · להמחשה',d:'טבילה אחת, שישה חלונות קריאה בזמנים שונים.',
+  wins:[{k:'כלור',o:15,c:45},{k:'pH',o:15,c:45},{k:'קשיות KH',o:30,c:60},{k:'קשיות GH',o:30,c:60},{k:'ניטריט',o:45,c:75},{k:'ניטראט',o:60,c:90}]},
+ {id:'tube',n:'ניטראט · ריאגנט נוזלי',m:'יצרן ב׳ · להמחשה',d:'שבעה שלבים ברצף. הניעור באמצע קריטי.',
+  steps:[{t:'מלא עד הקו',n:'5 מ״ל',d:0},{t:'10 טיפות מבקבוק 1',d:0},{t:'סגור ונער',d:5},
+   {t:'נער את בקבוק 2 במרץ',n:'קריטי — הריאגנט שוקע. ניעור חלקי נותן קריאה נמוכה מדי',d:30,cr:1},
+   {t:'10 טיפות מבקבוק 2',d:0},{t:'הפוך שוב ושוב',d:60},{t:'המתן לפיתוח',d:300},{t:'צלם מול לוח הצבעים',d:0}]},
+ {id:'unk',n:'ערכה שאינה במאגר',m:'—',d:'המקרה הכן: אין פרוצדורה מאומתת.'}
+];
+var tk=null,tst='pick',t0=0,tstep=0,tm={},traf=null,SPD=10;
+function fmt(s){s=Math.max(0,s);var m=Math.floor(s/60),r=Math.floor(s%60);return m>0?m+':'+(r<10?'0':'')+r:''+r;}
+function tsPick(){
+  document.getElementById('ts-sub').textContent='בחר את הערכה שלך';
+  var h='<p style="margin:0 0 12px;font-size:.85rem;color:var(--ink2);line-height:1.6">כל סוג ערכה מייצר זרימה אחרת. ההוראות נקראות מהערכה שלך — <b>לא מקטגוריה</b>.</p>';
+  KITS.forEach(function(k){h+='<button class="opt" data-kit="'+k.id+'"><span class="ot"><b>'+esc(k.n)+'</b><small>'+esc(k.m)+' · '+esc(k.d)+'</small></span><span class="oc"></span></button>';});
+  document.getElementById('ts-body').innerHTML=h;
+  document.getElementById('ts-foot').innerHTML='<p class="note" style="margin:0;text-align:center">בהדגמה הזמן רץ פי 10</p>';
+}
+function tsRun(){
+  var e=(performance.now()-t0)/1000*SPD,b=document.getElementById('ts-body'),f=document.getElementById('ts-foot');
+  if(tk.wins){
+    var nx=null;tk.wins.forEach(function(w,i){if(tm[i])return;
+      if(e<w.o){if(!nx||w.o<nx.v)nx={v:w.o,k:w.k,m:'o'};}
+      else if(e<=w.c){if(!nx||w.c<nx.v||nx.m==='o')nx={v:w.c,k:w.k,m:'c'};}});
+    var big='✓',sub='כל החלונות טופלו',cl='';
+    if(nx){var lf=nx.v-e;big=fmt(lf);
+      if(nx.m==='o'){sub='עוד רגע נפתח: '+nx.k;cl=lf<5?'u':'';}
+      else{sub=nx.k+' — החלון נסגר!';cl=lf<8?'l':'u';}}
+    var h='<div class="dial"><div class="t '+cl+'">'+big+'</div><div class="s">'+esc(sub)+'</div>'+
+      '<div class="ring"><i class="'+cl+'" style="width:'+Math.min(100,e/90*100)+'%"></i></div></div>'+
+      '<div class="rows" style="margin-top:12px">';
+    tk.wins.forEach(function(w,i){
+      var st='',cc='',lb='';
+      if(tm[i]){st='dn';cc=tm[i]==='late'?'נשמר · ביטחון מופחת':'נקרא';lb='✓';}
+      else if(e<w.o){cc='בעוד '+fmt(w.o-e);lb='המתן';}
+      else if(e<=w.c){st=(w.c-e<8?'cl':'op');cc='נסגר בעוד '+fmt(w.c-e);lb='קראתי';}
+      else{st='ms';cc='החלון נסגר';lb='רשום בכל זאת';}
+      h+='<div class="win '+st+'"><span class="p">'+esc(w.k)+'</span><span class="c">'+cc+'</span>'+
+        '<button class="b" data-rd="'+i+'"'+(st===''||st==='dn'?' disabled':'')+'>'+lb+'</button></div>';
+    });
+    b.innerHTML=h+'</div>';
+    f.innerHTML='<p class="note" style="margin:0;text-align:center">קריאה מאוחרת <b>מוטה לכיוון ידוע</b> — לכן היא נשמרת עם ביטחון מופחת, לא כרגילה.</p>';
+  } else {
+    var s=tk.steps[tstep],el2=(performance.now()-t0)/1000*SPD,big2='●',sub2='פעולה ידנית — לחץ כשסיימת',cl2='',pc=0;
+    if(s.d>0){var lf2=s.d-el2;big2=fmt(lf2);pc=Math.min(100,el2/s.d*100);
+      if(lf2<=0){big2='0';sub2='עבור לשלב הבא';cl2='l';}else{sub2=s.t;cl2=lf2<4?'u':'';}}
+    var h2='<div class="dial"><div class="t '+cl2+'">'+big2+'</div><div class="s">'+esc(sub2)+'</div>'+
+      '<div class="ring"><i class="'+cl2+'" style="width:'+pc+'%"></i></div></div>'+
+      '<div class="flag '+(s.cr?'c':'')+'" style="margin-top:10px"><b>'+(s.cr?'שלב קריטי':'שלב '+(tstep+1)+' מתוך '+tk.steps.length)+'</b><p>'+esc(s.t)+(s.n?' — '+esc(s.n):'')+'</p></div>';
+    b.innerHTML=h2;
+    var rdy=s.d===0||el2>=s.d;
+    f.innerHTML='<button class="cta" id="ts-nx"'+(rdy?'':' disabled style="opacity:.4"')+'><span>'+(tstep===tk.steps.length-1?'צלם ושמור':'סיימתי — הבא')+'</span></button>';
+  }
+}
+function tsLoop(){if(tst!=='run'){traf=null;return;}tsRun();traf=requestAnimationFrame(tsLoop);}
+document.getElementById('ts-body').addEventListener('click',function(e){
+  var k=e.target.closest('[data-kit]');
+  if(k){tk=KITS.filter(function(x){return x.id===k.dataset.kit;})[0];
+    document.getElementById('ts-sub').textContent=tk.n;
+    if(tk.id==='unk'){
+      document.getElementById('ts-body').innerHTML='<div class="flag c"><b>אין פרוצדורה במאגר</b>'+
+        '<p><b>לא אמציא לך זמנים.</b> אפשר לתזמן ידנית, אבל התוצאה תישמר מסומנת כשיטה לא־מאומתת ועם ביטחון מופחת — וברת־השוואה רק מול בדיקות מאותה ערכה.</p></div>';
+      document.getElementById('ts-foot').innerHTML='<button class="ghost">הפעל סטופר ידני</button>';return;}
+    tst='run';t0=performance.now();tstep=0;tm={};if(!traf)traf=requestAnimationFrame(tsLoop);return;}
+  var r=e.target.closest('[data-rd]');
+  if(r){var i=+r.dataset.rd,el3=(performance.now()-t0)/1000*SPD;tm[i]=el3>tk.wins[i].c?'late':'ok';}
+});
+document.getElementById('ts-foot').addEventListener('click',function(e){
+  if(e.target.closest('#ts-nx')){
+    if(tstep<tk.steps.length-1){tstep++;t0=performance.now();}
+    else{tst='done';if(traf){cancelAnimationFrame(traf);traf=null;}
+      document.getElementById('ts-body').innerHTML='<div class="verdict ok"><div class="vi"><svg viewBox="0 0 24 24">'+ic('ok')+'</svg></div><h3>הבדיקה נשמרה</h3><p>הצילום נשמר יחד עם זהות הערכה והזמן שחלף — כך אפשר לקרוא אותה מחדש בעוד חודשיים.</p></div>';
+      document.getElementById('ts-foot').innerHTML='<button class="cta" data-close><span>סיום</span></button>';}}
+});
+
+/* ─── 4 · TANK SETUP (§17) ─── */
+var suStep=1;
+function suRender(){
+  document.getElementById('su-s1').classList.toggle('on',suStep>=1);
+  document.getElementById('su-s2').classList.toggle('on',suStep>=2);
+  var b=document.getElementById('su-body'),f=document.getElementById('su-foot');
+  if(suStep===1){
+    document.getElementById('su-sub').textContent='מידות';
+    b.innerHTML='<div class="row3">'+
+      '<div class="field"><label>אורך</label><input id="su-l" type="number" value="115"></div>'+
+      '<div class="field"><label>רוחב</label><input id="su-w" type="number" value="35"></div>'+
+      '<div class="field"><label>גובה</label><input id="su-h" type="number" value="50"></div></div>'+
+      '<div class="row2"><div class="field"><label>גובה קו המים</label><input id="su-wl" type="number" value="45">'+
+      '<div class="hint">כמה ס״מ מהתחתית עד פני המים</div></div>'+
+      '<div class="field"><label>עומק המצע</label><input id="su-sb" type="number" value="4">'+
+      '<div class="hint">הקוורץ שלך</div></div></div>'+
+      '<div class="calc" id="su-calc"></div>';
+    f.innerHTML='<button class="cta" id="su-next"><span>המשך</span></button>';
+    ['su-l','su-w','su-h','su-wl','su-sb'].forEach(function(i){document.getElementById(i).addEventListener('input',suCalc);});
+    suCalc();
+  } else {
+    document.getElementById('su-sub').textContent='מה יש בפנים';
+    b.innerHTML='<p style="margin:0 0 12px;font-size:.85rem;color:var(--ink2);line-height:1.6">אבנים ועץ תופסים נפח. בלי זה כל מינון תרופה יהיה גבוה מדי.</p>'+
+      '<div class="field"><label>נפח אבנים ועץ משוער</label><input id="su-dc" type="number" value="8">'+
+      '<div class="hint">אם אתה לא יודע — שקול אותם. קילוגרם ≈ ליטר.</div></div>'+
+      '<div class="calc" id="su-calc2"></div>'+
+      '<div class="tip" style="margin-top:12px"><b>למה זה חשוב</b><p>המינון על הקרטון מתייחס לנפח <b>מים</b>. אם תחשב לפי 200 ליטר כשיש 152 — זה עודף של כמעט 30%.</p></div>';
+    f.innerHTML='<button class="cta" data-close><span>שמור אקווריום</span></button>';
+    document.getElementById('su-dc').addEventListener('input',suCalc2);suCalc2();
+  }
+}
+function gv(i){return parseFloat((document.getElementById(i)||{}).value)||0;}
+function suCalc(){
+  var L=gv('su-l'),W=gv('su-w'),H=gv('su-h'),WL=gv('su-wl'),SB=gv('su-sb');
+  var gross=L*W*H/1000,geo=L*W*WL/1000,sub=L*W*SB/1000;
+  var e=document.getElementById('su-calc');if(!e)return;
+  e.innerHTML='<div class="k">נפח מים גאומטרי</div><div class="v">'+geo.toFixed(0)+' ליטר</div>'+
+    '<div class="n">גולמי '+gross.toFixed(0)+' ל׳ · המצע תופס '+sub.toFixed(0)+' ל׳ · '+
+    '<b>נותר לחשב אבנים ועץ</b></div>';
+}
+function suCalc2(){
+  var L=gv('su-l'),W=gv('su-w'),WL=gv('su-wl'),SB=gv('su-sb'),DC=gv('su-dc');
+  var net=L*W*WL/1000-L*W*SB/1000-DC;
+  var e=document.getElementById('su-calc2');if(!e)return;
+  e.innerHTML='<div class="k">נפח נטו — זה המספר שכל חישוב ישתמש בו</div><div class="v">'+net.toFixed(0)+' ליטר</div>'+
+    '<div class="n">מדוד ואינו טווח יותר. הציון של איכות הנתונים יעלה.</div>';
+}
+document.getElementById('su-foot').addEventListener('click',function(e){
+  if(e.target.closest('#su-next')){suStep=2;suRender();}});
+
+/* ─── 5 · JOIN (§12, §13, §265) ─── */
+var jnStep=1,jnLvl=null;
+function jnRender(){
+  ['jn-s1','jn-s2','jn-s3'].forEach(function(i,k){document.getElementById(i).classList.toggle('on',k<jnStep);});
+  document.getElementById('jn-sub').textContent='שלב '+jnStep+' מתוך 3';
+  var b=document.getElementById('jn-body'),f=document.getElementById('jn-foot');
+  if(jnStep===1){
+    b.innerHTML='<div class="field"><label>שם מלא</label><input type="text" placeholder="ישראל ישראלי"></div>'+
+      '<div class="field"><label>אימייל</label><input type="email" placeholder="you@example.com"></div>'+
+      '<div class="field"><label>עיר</label><input type="text" placeholder="חיפה">'+
+      '<div class="hint">בשביל התרעות חום ושרב — לא בשביל פרסום.</div></div>'+
+      '<div class="field"><label>גיל</label><input type="number" placeholder="34">'+
+      '<div class="hint">מתחת ל-18 החשבון מקושר להורה, והמנוי על שמו.</div></div>';
+    f.innerHTML='<button class="cta" id="jn-next"><span>המשך</span></button>';
+  } else if(jnStep===2){
+    b.innerHTML='<p style="margin:0 0 12px;font-size:.85rem;color:var(--ink2);line-height:1.6">'+
+      'זה קובע <b>כמה מידע מוצג</b> — לא מה המערכת יודעת. אפשר לשנות בכל רגע.</p>'+
+      '<button class="opt" data-lvl="b"><span class="ot"><b>מתחיל</b><small>מה לעשות היום, בשפה פשוטה</small></span><span class="oc"></span></button>'+
+      '<button class="opt" data-lvl="e"><span class="ot"><b>חובב</b><small>מגדל כבר תקופה. מתחיל בתצוגה פשוטה, ואציע להעמיק</small></span><span class="oc"></span></button>'+
+      '<button class="opt" data-lvl="a"><span class="ot"><b>מתקדם</b><small>ערכים גולמיים, מגמות, מקורות</small></span><span class="oc"></span></button>'+
+      '<button class="opt" data-lvl="p"><span class="ot"><b>מגדל מקצועי</b><small>הרבה מיכלים, קבוצות רבייה, בדיקות אצווה</small></span><span class="oc"></span></button>'+
+      '<div class="tip" style="margin-top:12px"><b>מה שלא משתנה</b><p>אזהרת בטיחות נראית <b>זהה בכל הרמות</b> — אותו ניסוח, אותה חומרה. אמוניה היא אותה אמוניה.</p></div>';
+    f.innerHTML='<button class="cta" id="jn-next"><span>המשך</span></button>';
+  } else {
+    b.innerHTML='<div class="verdict ok"><div class="vi"><svg viewBox="0 0 24 24">'+ic('ok')+'</svg></div>'+
+      '<h3>30 יום ניסיון</h3><p>בלי כרטיס אשראי. אחרי זה תחליט.</p></div>'+
+      '<div class="exp"><div class="ex"><b>מה כלול</b><p>הכול. אין מסלול מוזל ואין מסלול חינם — <em>גם לא לקטינים</em>. שכבת גיל היא שער בטיחות, לא מדרגת מחיר.</p></div>'+
+      '<div class="ex"><b>מה לא כלול</b><p>ייעוץ עם מומחה אנושי הוא תשלום נפרד. הבינה המלאכותית כלולה במנוי.</p></div></div>';
+    f.innerHTML='<button class="cta" data-close><span>התחל</span></button>';
+  }
+}
+document.getElementById('jn-body').addEventListener('click',function(e){
+  var l=e.target.closest('[data-lvl]');if(!l)return;
+  document.querySelectorAll('#jn-body .opt').forEach(function(o){o.setAttribute('aria-pressed','false');});
+  l.setAttribute('aria-pressed','true');jnLvl=l.dataset.lvl;
+});
+document.getElementById('jn-foot').addEventListener('click',function(e){
+  if(e.target.closest('#jn-next')){jnStep++;if(jnStep>3)jnStep=3;jnRender();}});
+
+/* ─── 6 · LOSS (§253, §255, §258, §267, §269) ─── */
+var lsAlarm=false;
+function lsRender(){
+  var b=document.getElementById('ls-body'),f=document.getElementById('ls-foot');
+  document.getElementById('ls-title').textContent=lsAlarm?'התרעה קריטית':'רישום אובדן';
+  document.getElementById('ls-sub').textContent=lsAlarm?'אמוניה מדידה במיכל':'מולי · 22.8';
+  if(!lsAlarm){
+    b.innerHTML='<div class="soft"><div class="em">😔</div><h3>מצטער לשמוע</h3>'+
+      '<p>זה קורה גם למגדלים מנוסים.</p></div>'+
+      '<button class="ghost" style="margin-top:18px">רוצה שנבדוק מה קרה?</button>'+
+      '<p class="note" style="text-align:center;margin-top:12px">אפשר גם לא. הרישום כבר נשמר.</p>'+
+      '<div class="tip" style="margin-top:16px"><b>מה קורה מאחורי הקלעים</b>'+
+      '<p>הדג עבר לארכיון ולא נמחק — הוא ימשיך להיספר בגרפים לתקופה שבה באמת היה כאן. הספירה, העומס והתפריט חושבו מחדש. ולא יוצגו לך מוצרים או דגים ב-48 השעות הקרובות.</p></div>';
+    f.innerHTML='<button class="cta" data-close><span>סגור</span></button>'+
+      '<button class="ghost" id="ls-tog">הדגם: מוות בזמן אמוניה פעילה</button>';
+  } else {
+    b.innerHTML='<div class="verdict stop"><div class="vi"><svg viewBox="0 0 24 24">'+ic('c')+'</svg></div>'+
+      '<h3>אמוניה מדידה — פעל עכשיו</h3><p>שאר הדגים בסכנה. אלה הפעולות, לפי סדר.</p></div>'+
+      '<div class="exp"><div class="ex"><b>1 · עכשיו</b><p>הפסק להאכיל. אל תנקה את הסינון.</p></div>'+
+      '<div class="ex"><b>2 · תוך שעה</b><p>החלף 30% מים, בטמפרטורה תואמת.</p></div>'+
+      '<div class="ex"><b>3 · המשך</b><p>הוסף אוורור. בדוק אמוניה שוב בעוד 6 שעות.</p></div></div>'+
+      '<div class="soft" style="padding:16px 6px 4px;border-top:1px solid var(--line2);margin-top:14px">'+
+      '<div class="em" style="font-size:1.6rem">😔</div><p style="margin-top:7px">ומצטער על המולי.</p></div>';
+    f.innerHTML='<button class="cta" data-close><span>פתח מצב חירום</span></button>'+
+      '<button class="ghost" id="ls-tog">הדגם: מוות בלי טריגר</button>';
+  }
+}
+document.getElementById('ls-foot').addEventListener('click',function(e){
+  if(e.target.closest('#ls-tog')){lsAlarm=!lsAlarm;lsRender();}});
+
+/* ─── launchers ─── */
+document.addEventListener('click',function(e){
+  var t=e.target;
+  var btn=t.closest('.cta,.quiet');
+  if(btn&&/בדוק לפני/.test(btn.textContent)){ckList();open('sh-check');}
+  else if(btn&&/הוסף דג/.test(btn.textContent)){adStep=1;adRender();open('sh-add');}
+  else if(btn&&/בדיקה מודרכת/.test(btn.textContent)){tst='pick';tsPick();open('sh-test');}
+});
+document.getElementById('theme').addEventListener('contextmenu',function(e){e.preventDefault();});
+
+/* dev launcher strip */
+var strip=document.createElement('div');
+strip.style.cssText='display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)';
+strip.innerHTML='<span style="font-size:.68rem;color:var(--ink3);width:100%;margin-bottom:4px">מסכים נוספים להדגמה:</span>'+
+  '<button class="buy" style="width:auto;padding:7px 13px;font-size:.75rem" data-f="join">הרשמה</button>'+
+  '<button class="buy" style="width:auto;padding:7px 13px;font-size:.75rem" data-f="setup">הקמת מיכל</button>'+
+  '<button class="buy" style="width:auto;padding:7px 13px;font-size:.75rem" data-f="loss">אובדן דג</button>';
+strip.addEventListener('click',function(e){
+  var b=e.target.closest('[data-f]');if(!b)return;
+  if(b.dataset.f==='join'){jnStep=1;jnRender();open('sh-join');}
+  if(b.dataset.f==='setup'){suStep=1;suRender();open('sh-setup');}
+  if(b.dataset.f==='loss'){lsAlarm=false;lsRender();open('sh-loss');}
+});
+document.getElementById('p-home').appendChild(strip);
+})();
+</script>
+
+</body>
+</html>
