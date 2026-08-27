@@ -359,7 +359,7 @@ body{margin:0;direction:rtl;background:var(--bg);color:var(--ink);
   <div class="pg" id="p-home">
     <div class="photo">
       <canvas id="shot"></canvas><div class="pv"></div>
-      <div class="pt"><b>אקווריום לדוגמה</b><span>115 × 35 × 50 · אילוסטרציה</span></div>
+      <div class="pt"><b>אקווריום לדוגמה</b><span><bdi style="direction:ltr;unicode-bidi:isolate">115 × 35 × 50</bdi> · אילוסטרציה</span></div>
       <div class="pb"><span class="chip"><s></s><span id="chip">נראה טוב</span></span><em>נתוני דוגמה</em></div>
     </div>
 
@@ -562,7 +562,7 @@ var grain=document.createElement('canvas');grain.width=grain.height=100;
  for(var i=0;i<p.length;i+=4){var v=195+Math.floor(Math.random()*55);p[i]=p[i+1]=p[i+2]=v;p[i+3]=18;}
  g.putImageData(d,0,0);})();
 
-function bokeh(cvs,cols,t,dark){
+function bokeh(cvs,cols,t,dark,boost){boost=boost||1;
   var c=cvs.getContext('2d'),dpr=Math.min(window.devicePixelRatio||1,2);
   var w=cvs.clientWidth||300,h=cvs.clientHeight||120;
   if(!w||!h)return;
@@ -571,14 +571,14 @@ function bokeh(cvs,cols,t,dark){
   var bg=c.createLinearGradient(0,0,0,h);
   bg.addColorStop(0,dark?'#0B2A5E':'#1E56B8');bg.addColorStop(.62,dark?'#071C3E':'#123C88');bg.addColorStop(1,dark?'#2A2E20':'#E4DCC4');
   c.fillStyle=bg;c.fillRect(0,0,w,h);
-  for(var i=0;i<cols.length;i++)for(var k=0;k<3;k++){
+  for(var i=0;i<cols.length;i++)for(var k=0;k<(boost>1?5:3);k++){
     var s=i*8+k*15;
     var px=(Math.sin(s*1.7)*.5+.5)*w+Math.sin(t*.09+s)*w*.02;
     var py=(Math.cos(s*2.1)*.5+.5)*h*.9+Math.cos(t*.08+s)*h*.05;
     var pr=(.17+((s%6)/15))*Math.max(w,h)*.8;
     var g2=c.createRadialGradient(px,py,0,px,py,pr);
     g2.addColorStop(0,cols[i][0]);g2.addColorStop(1,'rgba(0,0,0,0)');
-    c.globalAlpha=cols[i][1]*.27;c.fillStyle=g2;c.fillRect(px-pr,py-pr,pr*2,pr*2);
+    c.globalAlpha=Math.min(.85,cols[i][1]*.27*boost);c.fillStyle=g2;c.fillRect(px-pr,py-pr,pr*2,pr*2);
   }
   c.globalAlpha=1;
   var vg=c.createRadialGradient(w*.5,h*.4,Math.min(w,h)*.2,w*.5,h*.5,Math.max(w,h)*.7);
@@ -589,8 +589,8 @@ function bokeh(cvs,cols,t,dark){
 var TANK=[['#2B7CC9',.55],['#1B3A8C',.6],['#5BC5E8',.4],['#E8853A',.3],['#8CC63F',.26],['#E8302A',.2]];
 var shot=document.getElementById('shot'),raf=null;
 function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
-function frame(ms){var t=ms/1000;bokeh(shot,TANK,t,isDark());raf=requestAnimationFrame(frame);}
-bokeh(shot,TANK,0,false);
+function frame(ms){var t=ms/1000;bokeh(shot,TANK,t,isDark(),1.8);raf=requestAnimationFrame(frame);}
+bokeh(shot,TANK,0,false,1.8);
 if(!reduce.matches)raf=requestAnimationFrame(frame);
 document.addEventListener('visibilitychange',function(){
   if(document.hidden){if(raf){cancelAnimationFrame(raf);raf=null;}}
@@ -752,7 +752,7 @@ document.getElementById('m-b').addEventListener('click',function(){beg=true;appl
 document.getElementById('m-a').addEventListener('click',function(){beg=false;applyMode();});
 document.getElementById('theme').addEventListener('click',function(){
   var r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');
-  bokeh(shot,TANK,0,isDark());});
+  bokeh(shot,TANK,0,isDark(),1.8);});
 applyMode();
 
 /* ════════ FLOW ENGINE ════════ */
