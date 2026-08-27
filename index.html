@@ -1109,6 +1109,15 @@ strip.addEventListener('click',function(e){
   if(b.dataset.f==='loss'){lsAlarm=false;lsRender();open('sh-loss');}
 });
 document.getElementById('p-home').appendChild(strip);
+
+/* deck-screenshot hooks: ?m=a professional view · ?p=water tab · ?b=0 hide banner */
+try{
+  var Q=location.search;
+  if(/b=0/.test(Q)){var db=document.querySelector('.demo-banner');if(db)db.style.display='none';}
+  if(/m=a/.test(Q)){beg=false;}
+  var MP=/p=(\w+)/.exec(Q);
+  go(MP?MP[1]:'home');
+}catch(e){}
 })();
 </script>
 
