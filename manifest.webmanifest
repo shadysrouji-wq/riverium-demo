@@ -1,12 +1,12 @@
 {
- "name": "Riverium — הדגמה",
- "short_name": "Riverium",
+ "name": "AquaCare — הדגמה",
+ "short_name": "AquaCare",
  "dir": "rtl",
  "lang": "he",
  "display": "standalone",
  "start_url": ".",
  "background_color": "#F4FAFD",
- "theme_color": "#12294D",
+ "theme_color": "#2A1B6B",
  "icons": [
   {
    "src": "icon-192.png",
